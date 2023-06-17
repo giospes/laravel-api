@@ -5,25 +5,33 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Project;
+use App\Models\Technology;
+
 class ProjectsController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
-        $projects = Project::with('user','technologies', 'type')->paginate(5);
-        if($projects){
-            return response()->json([
-                'success'=> true,
-                'message'=> 'ok',
-                'results'=> $projects
-            ]);
+        if(!empty($request->query('technology_id'))){
+            $technology_id = $request->query('technology_id');
+            $projects = Project::whereHas('technologies', function ($query) use ($technology_id){
+                $query->where('technology_id', $technology_id);
+            } )->with('user','technologies', 'type')->paginate(5);
         }else{
-            return response()->json([
-                'status'=> 'error',
-                'message'=> 'Error'
-            ], 404);
+            $projects = Project::with('user','technologies', 'type')->paginate(5);
         }
-        
+        $technologies= Technology::all();
+        $data = [
+            'projects' => $projects,
+            'technologies' => $technologies
+        ];
+       
+        return response()->json([
+            'success'=> true,
+            'message'=> 'ok',
+            'results'=> $data
+        ]);
+       
     }
 
     /**
