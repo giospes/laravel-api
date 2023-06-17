@@ -14,7 +14,7 @@ class Project extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'description', 'created_at', 'updated_at', 'user_id', 'slug', 'type_id'];
+    protected $guarded=[];
 
     public function photos(){
         return $this->hasMany(Photo::class);

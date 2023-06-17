@@ -15,9 +15,7 @@ use App\Http\Controllers\Admin\ProjectsController;
 |
 */
 
-Route::get('/', function () {
-    return view('home');
-});
+
 
 // Route::get('/dashboard', function () {
 //     return view('dashboard');
@@ -44,4 +42,10 @@ Route::middleware(['auth', 'verified'])->name('admin.')->prefix('admin')->group(
     });
     
 });
+
+
 require __DIR__.'/auth.php';
+
+Route::fallback( function () {
+    return redirect()->route('admin.dashboard');
+});

@@ -7,18 +7,23 @@ use Illuminate\Http\Request;
 use App\Models\Project;
 class ProjectsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
         $projects = Project::with('user','technologies', 'type')->paginate(5);
-        return response()->json([
-            'success'=> true,
-            'results'=> $projects
-        ]);
+        if($projects){
+            return response()->json([
+                'success'=> true,
+                'message'=> 'ok',
+                'results'=> $projects
+            ]);
+        }else{
+            return response()->json([
+                'status'=> 'error',
+                'message'=> 'Error'
+            ], 404);
+        }
+        
     }
 
     /**
@@ -56,7 +61,12 @@ class ProjectsController extends Controller
             return response()->json([
                 'success'=> true,
                 'results'=> $project
-            ]);
+            ], 200);
+        }else{
+            return response()->json([
+                'status'=> 'error',
+                'message'=> 'Error'
+            ], 404);
         }
         
     }
